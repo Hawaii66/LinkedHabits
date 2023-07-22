@@ -1,17 +1,17 @@
-### Linked Habits
+# Linked Habits
 
 - Create habits that are linked to help you complete multiple tasks in a row. Inspiration from the books Atomic Habits and Tiny Habits
 
 ## Run
 
-# Client
+### Client
 
 ```
 cd linkedhabits
 npx expo start --dev-client
 ```
 
-# Server
+### Server
 
 ```
 cd server
@@ -21,3 +21,12 @@ npm run dev
 ## Build
 
 Soon
+
+## Stack
+
+- Client:
+  - React Native
+  - React Native Paper
+- Server:
+  - NextJS
+  - Supabase JS
