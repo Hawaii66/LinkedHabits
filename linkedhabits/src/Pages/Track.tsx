@@ -1,37 +1,66 @@
 import React, { useState } from "react";
-import { SafeAreaView, TouchableOpacity, View } from "react-native";
+import { SafeAreaView, TouchableOpacity, View, ScrollView } from "react-native";
 import HeaderInfo from "../Components/HeaderInfo";
-import { Calendar, DateData } from "react-native-calendars";
+import { Calendar } from "react-native-calendars";
 import FText from "../Components/Utils/FText";
+import { isBefore, isToday } from "date-fns";
+import { GetMockData } from "../Functions/MockData";
 
-const completed: { color: string; count: number; date: string }[] = [
+const completed: TrackedHabit[] = [
   {
-    color: "#F4D160",
-    count: 3,
+    completed: GetMockData(),
     date: "2023-07-20",
   },
   {
-    color: "#00DFA2",
-    count: 6,
+    completed: GetMockData().slice(0, 2),
     date: "2023-07-21",
   },
   {
-    color: "#E76161",
-    count: 1,
+    completed: GetMockData().slice(0, 1),
     date: "2023-07-16",
   },
 ];
 
+const CountToColor = (count: number) => {
+  if (count === 0) {
+    return "#fff";
+  }
+  if (count === 1) {
+    return "#E76161";
+  }
+  if (count === 2) {
+    return "#F4D160";
+  }
+
+  return "#00DFA2";
+};
+
 const GetInfo = (date: string | undefined) => {
   const hasSpecial = completed.find((i) => i.date === date);
 
+  const text = hasSpecial
+    ? hasSpecial.completed.length.toString()
+    : isBefore(new Date(date || ""), new Date())
+    ? isToday(new Date(date || ""))
+      ? ""
+      : "-"
+    : "";
+
   return {
-    color: hasSpecial ? hasSpecial.color : "#fff",
-    text: hasSpecial ? hasSpecial.count.toString() : "",
+    color: hasSpecial ? CountToColor(hasSpecial.completed.length) : "",
+    text: text,
   };
 };
 
 function Track() {
+  const [selected, setSelected] = useState<string | null>(null);
+  const selectedTrackedTime = completed.find((i) => i.date === selected);
+
+  console.log(
+    selected,
+    completed.find((i) => i.date === selected)
+  );
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
       <View
@@ -52,9 +81,13 @@ function Track() {
             enableSwipeMonths
             firstDay={1}
             showWeekNumbers
-            dayComponent={({ date, state, marking }) => (
+            dayComponent={({ date, state }) => (
               <TouchableOpacity
-                onPress={() => console.log("Day pressed: ", date, marking)}
+                disabled={
+                  completed.find((i) => i.date === date?.dateString) ===
+                  undefined
+                }
+                onPress={() => setSelected(date?.dateString || null)}
               >
                 <View
                   style={{
@@ -65,8 +98,13 @@ function Track() {
                     justifyContent: "center",
                     alignItems: "center",
                     backgroundColor: GetInfo(date?.dateString).color,
-                    borderWidth: state === "today" ? 1.5 : 1,
-                    borderColor: state === "disabled" ? "#9BABB8" : "#000000",
+                    borderWidth: state === "today" ? 2 : 1,
+                    borderColor:
+                      state === "today"
+                        ? "#3333ff"
+                        : state === "disabled"
+                        ? "#9BABB8"
+                        : "#000000",
                   }}
                 >
                   <FText style={{ fontFamily: "600" }}>
@@ -76,6 +114,48 @@ function Track() {
               </TouchableOpacity>
             )}
           />
+          <View style={{ flex: 1, margin: 5 }}>
+            {selected !== null && (
+              <>
+                <FText
+                  style={{
+                    fontFamily: "800",
+                    textAlign: "center",
+                    fontSize: 24,
+                  }}
+                >
+                  {selectedTrackedTime?.date}
+                </FText>
+                <ScrollView>
+                  {selectedTrackedTime?.completed.map((tracked) => (
+                    <View style={{ marginVertical: 4 }}>
+                      <FText style={{ fontFamily: "600", fontSize: 20 }}>
+                        • {tracked.name}
+                      </FText>
+                      <FText
+                        style={{
+                          fontFamily: "600",
+                          fontSize: 18,
+                          paddingLeft: 20,
+                        }}
+                      >
+                        Trigger: {tracked.trigger.name}
+                      </FText>
+                      <FText
+                        style={{
+                          fontFamily: "600",
+                          fontSize: 18,
+                          paddingLeft: 20,
+                        }}
+                      >
+                        Längd: {tracked.habits.length}
+                      </FText>
+                    </View>
+                  ))}
+                </ScrollView>
+              </>
+            )}
+          </View>
         </View>
       </View>
     </SafeAreaView>

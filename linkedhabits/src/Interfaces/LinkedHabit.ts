@@ -26,3 +26,8 @@ type LinkedHabit = {
   habits: Habit[];
   reward?: Reward;
 };
+
+type TrackedHabit = {
+  date: string;
+  completed: LinkedHabit[];
+};
