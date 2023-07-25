@@ -25,6 +25,7 @@ type LinkedHabit = {
   trigger: Trigger;
   habits: Habit[];
   reward?: Reward;
+  durationSeconds: number;
 };
 
 type TrackedHabit = {

@@ -11,16 +11,22 @@ import SearchIcon from "react-native-vector-icons/EvilIcons";
 import Preview from "../Components/LinkedChain/Preview";
 import LinkedChain from "./LinkedChain";
 import HeaderInfo from "../Components/HeaderInfo";
+import Create from "./Create";
 
 function Home() {
   const [links, setLinks] = useState(GetMockData());
   const [searchQuery, setSearchQuery] = useState("");
   const [link, setLink] = useState<LinkedHabit | null>(null);
+  const [edit, setEdit] = useState<LinkedHabit | null>(null);
 
   const goToLink = (link: LinkedHabit) => {
     setLink(link);
     setSearchQuery("");
   };
+
+  if (edit) {
+    return <Create initalHabit={edit} />;
+  }
 
   if (link) {
     return <LinkedChain onBack={() => setLink(null)} link={link} />;
@@ -82,7 +88,26 @@ function Home() {
                 icon="plus"
                 contentStyle={{ flexDirection: "row-reverse" }}
                 mode="elevated"
-                onPress={() => {}}
+                onPress={() =>
+                  setEdit({
+                    durationSeconds: 5 * 60,
+                    habits: [
+                      {
+                        name: "Clean bedroom",
+                      },
+                    ],
+                    name: "habit name",
+                    trigger: {
+                      type: "Spot",
+                      name: "",
+                      description: "",
+                    },
+                    reward: {
+                      name: "reward",
+                      description: "",
+                    },
+                  })
+                }
               >
                 Create
               </Button>
