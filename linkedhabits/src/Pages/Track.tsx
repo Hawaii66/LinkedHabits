@@ -56,11 +56,6 @@ function Track() {
   const [selected, setSelected] = useState<string | null>(null);
   const selectedTrackedTime = completed.find((i) => i.date === selected);
 
-  console.log(
-    selected,
-    completed.find((i) => i.date === selected)
-  );
-
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
       <View

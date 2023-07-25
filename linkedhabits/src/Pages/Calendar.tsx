@@ -36,7 +36,6 @@ function Calendar() {
                   marked: true,
                 },
               }}
-              onPress={(e) => console.log(e)}
             />
             <View style={{ flex: 1 }}>
               <TimelineList
